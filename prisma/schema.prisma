@@ -32,7 +32,7 @@ model LinkClick {
   browser String?
   os String?
   referer  String?
-  ipHash    String?
+  ip    String?
 
   @@index([linkId])
   @@index([clickedAt])

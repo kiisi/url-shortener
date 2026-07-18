@@ -91,7 +91,7 @@ export const LinkClickScalarFieldEnum = {
   browser: 'browser',
   os: 'os',
   referer: 'referer',
-  ipHash: 'ipHash'
+  ip: 'ip'
 } as const
 
 export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]

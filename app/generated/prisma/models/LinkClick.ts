@@ -31,7 +31,7 @@ export type LinkClickMinAggregateOutputType = {
   browser: string | null
   os: string | null
   referer: string | null
-  ipHash: string | null
+  ip: string | null
 }
 
 export type LinkClickMaxAggregateOutputType = {
@@ -41,7 +41,7 @@ export type LinkClickMaxAggregateOutputType = {
   browser: string | null
   os: string | null
   referer: string | null
-  ipHash: string | null
+  ip: string | null
 }
 
 export type LinkClickCountAggregateOutputType = {
@@ -51,7 +51,7 @@ export type LinkClickCountAggregateOutputType = {
   browser: number
   os: number
   referer: number
-  ipHash: number
+  ip: number
   _all: number
 }
 
@@ -63,7 +63,7 @@ export type LinkClickMinAggregateInputType = {
   browser?: true
   os?: true
   referer?: true
-  ipHash?: true
+  ip?: true
 }
 
 export type LinkClickMaxAggregateInputType = {
@@ -73,7 +73,7 @@ export type LinkClickMaxAggregateInputType = {
   browser?: true
   os?: true
   referer?: true
-  ipHash?: true
+  ip?: true
 }
 
 export type LinkClickCountAggregateInputType = {
@@ -83,7 +83,7 @@ export type LinkClickCountAggregateInputType = {
   browser?: true
   os?: true
   referer?: true
-  ipHash?: true
+  ip?: true
   _all?: true
 }
 
@@ -166,7 +166,7 @@ export type LinkClickGroupByOutputType = {
   browser: string | null
   os: string | null
   referer: string | null
-  ipHash: string | null
+  ip: string | null
   _count: LinkClickCountAggregateOutputType | null
   _min: LinkClickMinAggregateOutputType | null
   _max: LinkClickMaxAggregateOutputType | null
@@ -197,7 +197,7 @@ export type LinkClickWhereInput = {
   browser?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   os?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   referer?: Prisma.StringNullableFilter<"LinkClick"> | string | null
-  ipHash?: Prisma.StringNullableFilter<"LinkClick"> | string | null
+  ip?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   link?: Prisma.XOR<Prisma.LinkScalarRelationFilter, Prisma.LinkWhereInput>
 }
 
@@ -208,7 +208,7 @@ export type LinkClickOrderByWithRelationInput = {
   browser?: Prisma.SortOrderInput | Prisma.SortOrder
   os?: Prisma.SortOrderInput | Prisma.SortOrder
   referer?: Prisma.SortOrderInput | Prisma.SortOrder
-  ipHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  ip?: Prisma.SortOrderInput | Prisma.SortOrder
   link?: Prisma.LinkOrderByWithRelationInput
 }
 
@@ -222,7 +222,7 @@ export type LinkClickWhereUniqueInput = Prisma.AtLeast<{
   browser?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   os?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   referer?: Prisma.StringNullableFilter<"LinkClick"> | string | null
-  ipHash?: Prisma.StringNullableFilter<"LinkClick"> | string | null
+  ip?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   link?: Prisma.XOR<Prisma.LinkScalarRelationFilter, Prisma.LinkWhereInput>
 }, "id">
 
@@ -233,7 +233,7 @@ export type LinkClickOrderByWithAggregationInput = {
   browser?: Prisma.SortOrderInput | Prisma.SortOrder
   os?: Prisma.SortOrderInput | Prisma.SortOrder
   referer?: Prisma.SortOrderInput | Prisma.SortOrder
-  ipHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  ip?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.LinkClickCountOrderByAggregateInput
   _max?: Prisma.LinkClickMaxOrderByAggregateInput
   _min?: Prisma.LinkClickMinOrderByAggregateInput
@@ -249,7 +249,7 @@ export type LinkClickScalarWhereWithAggregatesInput = {
   browser?: Prisma.StringNullableWithAggregatesFilter<"LinkClick"> | string | null
   os?: Prisma.StringNullableWithAggregatesFilter<"LinkClick"> | string | null
   referer?: Prisma.StringNullableWithAggregatesFilter<"LinkClick"> | string | null
-  ipHash?: Prisma.StringNullableWithAggregatesFilter<"LinkClick"> | string | null
+  ip?: Prisma.StringNullableWithAggregatesFilter<"LinkClick"> | string | null
 }
 
 export type LinkClickCreateInput = {
@@ -258,7 +258,7 @@ export type LinkClickCreateInput = {
   browser?: string | null
   os?: string | null
   referer?: string | null
-  ipHash?: string | null
+  ip?: string | null
   link: Prisma.LinkCreateNestedOneWithoutClicksInput
 }
 
@@ -269,7 +269,7 @@ export type LinkClickUncheckedCreateInput = {
   browser?: string | null
   os?: string | null
   referer?: string | null
-  ipHash?: string | null
+  ip?: string | null
 }
 
 export type LinkClickUpdateInput = {
@@ -278,7 +278,7 @@ export type LinkClickUpdateInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   link?: Prisma.LinkUpdateOneRequiredWithoutClicksNestedInput
 }
 
@@ -289,7 +289,7 @@ export type LinkClickUncheckedUpdateInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type LinkClickCreateManyInput = {
@@ -299,7 +299,7 @@ export type LinkClickCreateManyInput = {
   browser?: string | null
   os?: string | null
   referer?: string | null
-  ipHash?: string | null
+  ip?: string | null
 }
 
 export type LinkClickUpdateManyMutationInput = {
@@ -308,7 +308,7 @@ export type LinkClickUpdateManyMutationInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type LinkClickUncheckedUpdateManyInput = {
@@ -318,7 +318,7 @@ export type LinkClickUncheckedUpdateManyInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type LinkClickListRelationFilter = {
@@ -338,7 +338,7 @@ export type LinkClickCountOrderByAggregateInput = {
   browser?: Prisma.SortOrder
   os?: Prisma.SortOrder
   referer?: Prisma.SortOrder
-  ipHash?: Prisma.SortOrder
+  ip?: Prisma.SortOrder
 }
 
 export type LinkClickMaxOrderByAggregateInput = {
@@ -348,7 +348,7 @@ export type LinkClickMaxOrderByAggregateInput = {
   browser?: Prisma.SortOrder
   os?: Prisma.SortOrder
   referer?: Prisma.SortOrder
-  ipHash?: Prisma.SortOrder
+  ip?: Prisma.SortOrder
 }
 
 export type LinkClickMinOrderByAggregateInput = {
@@ -358,7 +358,7 @@ export type LinkClickMinOrderByAggregateInput = {
   browser?: Prisma.SortOrder
   os?: Prisma.SortOrder
   referer?: Prisma.SortOrder
-  ipHash?: Prisma.SortOrder
+  ip?: Prisma.SortOrder
 }
 
 export type LinkClickCreateNestedManyWithoutLinkInput = {
@@ -413,7 +413,7 @@ export type LinkClickCreateWithoutLinkInput = {
   browser?: string | null
   os?: string | null
   referer?: string | null
-  ipHash?: string | null
+  ip?: string | null
 }
 
 export type LinkClickUncheckedCreateWithoutLinkInput = {
@@ -422,7 +422,7 @@ export type LinkClickUncheckedCreateWithoutLinkInput = {
   browser?: string | null
   os?: string | null
   referer?: string | null
-  ipHash?: string | null
+  ip?: string | null
 }
 
 export type LinkClickCreateOrConnectWithoutLinkInput = {
@@ -461,7 +461,7 @@ export type LinkClickScalarWhereInput = {
   browser?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   os?: Prisma.StringNullableFilter<"LinkClick"> | string | null
   referer?: Prisma.StringNullableFilter<"LinkClick"> | string | null
-  ipHash?: Prisma.StringNullableFilter<"LinkClick"> | string | null
+  ip?: Prisma.StringNullableFilter<"LinkClick"> | string | null
 }
 
 export type LinkClickCreateManyLinkInput = {
@@ -470,7 +470,7 @@ export type LinkClickCreateManyLinkInput = {
   browser?: string | null
   os?: string | null
   referer?: string | null
-  ipHash?: string | null
+  ip?: string | null
 }
 
 export type LinkClickUpdateWithoutLinkInput = {
@@ -479,7 +479,7 @@ export type LinkClickUpdateWithoutLinkInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type LinkClickUncheckedUpdateWithoutLinkInput = {
@@ -488,7 +488,7 @@ export type LinkClickUncheckedUpdateWithoutLinkInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type LinkClickUncheckedUpdateManyWithoutLinkInput = {
@@ -497,7 +497,7 @@ export type LinkClickUncheckedUpdateManyWithoutLinkInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ipHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -509,7 +509,7 @@ export type LinkClickSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   browser?: boolean
   os?: boolean
   referer?: boolean
-  ipHash?: boolean
+  ip?: boolean
   link?: boolean | Prisma.LinkDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["linkClick"]>
 
@@ -520,7 +520,7 @@ export type LinkClickSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   browser?: boolean
   os?: boolean
   referer?: boolean
-  ipHash?: boolean
+  ip?: boolean
   link?: boolean | Prisma.LinkDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["linkClick"]>
 
@@ -531,7 +531,7 @@ export type LinkClickSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   browser?: boolean
   os?: boolean
   referer?: boolean
-  ipHash?: boolean
+  ip?: boolean
   link?: boolean | Prisma.LinkDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["linkClick"]>
 
@@ -542,10 +542,10 @@ export type LinkClickSelectScalar = {
   browser?: boolean
   os?: boolean
   referer?: boolean
-  ipHash?: boolean
+  ip?: boolean
 }
 
-export type LinkClickOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "linkId" | "clickedAt" | "browser" | "os" | "referer" | "ipHash", ExtArgs["result"]["linkClick"]>
+export type LinkClickOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "linkId" | "clickedAt" | "browser" | "os" | "referer" | "ip", ExtArgs["result"]["linkClick"]>
 export type LinkClickInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   link?: boolean | Prisma.LinkDefaultArgs<ExtArgs>
 }
@@ -568,7 +568,7 @@ export type $LinkClickPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     browser: string | null
     os: string | null
     referer: string | null
-    ipHash: string | null
+    ip: string | null
   }, ExtArgs["result"]["linkClick"]>
   composites: {}
 }
@@ -999,7 +999,7 @@ export interface LinkClickFieldRefs {
   readonly browser: Prisma.FieldRef<"LinkClick", 'String'>
   readonly os: Prisma.FieldRef<"LinkClick", 'String'>
   readonly referer: Prisma.FieldRef<"LinkClick", 'String'>
-  readonly ipHash: Prisma.FieldRef<"LinkClick", 'String'>
+  readonly ip: Prisma.FieldRef<"LinkClick", 'String'>
 }
     
 
