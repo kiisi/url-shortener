@@ -9,12 +9,23 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
+    "bullmq": "^5.80.8",
     "clsx": "^2.1.1",
+    "dotenv": "^17.4.2",
+    "inngest": "^4.13.0",
     "lucide-react": "^1.25.0",
+    "nanoid": "^6.0.0",
     "next": "16.2.10",
+    "prisma": "^7.8.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "ua-parser-js": "^2.0.10",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

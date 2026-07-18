@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { plusJakartaSans, sourGummy } from "./fonts";
-import { cn } from "./lib/utils";
+import { cn } from "../utils";
 import { ArrowRight, Edit3, LinkIcon } from "lucide-react";
 
 export default function Home() {
@@ -102,7 +102,7 @@ export default function Home() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-8 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/35 text-sm"
+              className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-8 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/35 text-sm cursor-pointer"
             >
               <span>Shorten URL</span>
               <ArrowRight className="w-4 h-4" />

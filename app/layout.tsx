@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { plusJakartaSans } from "./fonts";
-import { cn } from "./lib/utils";
+import { cn } from "../utils";
 
 
 
