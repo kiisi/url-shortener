@@ -3,9 +3,78 @@
 import Link from "next/link";
 import { plusJakartaSans, sourGummy } from "./fonts";
 import { cn } from "../utils";
-import { ArrowRight, Edit3, LinkIcon } from "lucide-react";
+import { Link2, Pencil, Copy, Check, QrCode, RefreshCw, ArrowRight, AlertCircle, Edit3, LinkIcon, Circle, LoaderCircle } from "lucide-react";
+import { useState } from "react";
+
+interface ShortenUrlResponse {
+  success: boolean;
+  message: string;
+  data: {
+    shortCode: string;
+    originalUrl: string;
+    shortUrl: string;
+  };
+}
 
 export default function Home() {
+
+  const [url, setUrl] = useState("");
+  const [alias, setAlias] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading">("idle");
+  const [result, setResult] = useState<ShortenUrlResponse>({} as ShortenUrlResponse);
+  const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [showQr, setShowQr] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!url) {
+      return setError({
+        message: "Enter a valid URL"
+      })
+    }
+
+    const payload = { url }
+
+    setStatus("loading");
+    setError(null);
+    try {
+
+      const response = await fetch("/api/shorten", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      setResult(data);
+      console.log("Data", data);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setStatus("idle")
+    }
+  };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(result.data.shortUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  const reset = () => {
+    setUrl("");
+    setAlias("");
+    setResult(null);
+    setError(null);
+    setStatus("idle");
+    setShowQr(false);
+  };
+
+
   return (
     <>
       {/* NAVIGATION */}
@@ -45,14 +114,7 @@ export default function Home() {
             Transform long URLs into clean, shareable links for social media, presentations, and everywhere else instantly.
           </p>
 
-          {/* <input
-              placeholder="Paste URL link"
-              className="w-full h-[42px] lg:h-[46px] px-4 border-[1px] border-[#c2c4c6] rounded-[4px]"
-            />
-            <button className="bg-primary text-white rounded-[4px] h-[42px] lg:h-[46px] px-4 whitespace-nowrap">
-              Shorten Link
-            </button> */}
-          <form className="w-full max-w-[768px] mx-auto space-y-4 w-full">
+          <form onSubmit={handleSubmit} className="w-full max-w-[768px] mx-auto space-y-4 w-full">
             {/* Long URL Field */}
             <fieldset className="flex flex-col items-start">
               <label htmlFor="longUrl" className="inline-block text-sm font-medium text-slate-700 mb-1.5">
@@ -63,10 +125,12 @@ export default function Home() {
                   <LinkIcon className="h-5 w-5 text-slate-400" />
                 </div>
                 <input
-                  id="longUrl"
+                  id="url"
                   type="text"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
                   placeholder="Enter the URL you want to shorten"
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none transition-all text-slate-700 placeholder:text-slate-400"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
                 />
               </div>
               {/* <p className="mt-1.5 text-xs text-slate-400">
@@ -87,26 +151,83 @@ export default function Home() {
                 <input
                   id="alias"
                   type="text"
-                  placeholder="e.g., myblog, project2024, summer-sale"
+                  value={alias}
+                  onChange={(e) => setAlias(e.target.value)}
+                  placeholder="e.g., myblog, summer-sale"
                   className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
                 />
               </div>
               <div className="flex items-center gap-2 mt-1.5">
                 <span className="text-xs text-slate-400">Your short URL will be:</span>
                 <span className="text-xs font-mono text-primary bg-primary/5 px-2 py-0.5 rounded-md">
-                  shortminiurl.vercel.app/{'your-alias'}
+                  shortminiurl.vercel.app/{`${alias.trim() === "" ? 'your-alias' : alias}`}
                 </span>
               </div>
             </fieldset>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-8 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/35 text-sm cursor-pointer"
-            >
-              <span>Shorten URL</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            {
+              !result?.data && (
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-8 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/35 text-[15px] cursor-pointer"
+                >
+                  {status === "loading" ? (
+                    <>
+                      <LoaderCircle className="w-5 h-5 animate-spin" /> Shortening…
+                    </>
+                  ) : (
+                    <>
+                      Shorten URL <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              )
+            }
+
+            {
+              result?.data && (
+                <div className="mt-6 rounded-xl border border-indigo-100 bg-indigo-50/50 p-4 sm:p-5 animate-[fadeIn_0.2s_ease]">
+                  <p className="text-left text-[14px] text-gray-500 mb-2">Your short link is ready</p>
+                  <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3">
+                    <span className="text-sm font-mono text-indigo-700 truncate flex-1">
+                      {result.data.shortUrl}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      className="shrink-0 flex justify-center items-center gap-1.5 text-xs font-medium w-[100px] px-3 py-1.5 rounded-md bg-primary text-white hover:bg-primary/90 transition cursor-pointer"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copied ? "Copied" : "Copy"}
+                    </button>
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowQr((s) => !s)}
+                      className="text-[14px] text-gray-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                    >
+                      <QrCode className="w-4 h-4" /> {showQr ? "Hide" : "Show"} QR code
+                    </button>
+                    <button
+                      type="button"
+                      onClick={reset}
+                      className="text-[14px] text-gray-500 hover:text-indigo-600 cursor-pointer"
+                    >
+                      Shorten another
+                    </button>
+                  </div>
+
+                  {showQr && (
+                    <div className="mt-3 w-28 h-28 bg-white border border-gray-200 rounded-lg flex items-center justify-center">
+                      <QrCode className="w-16 h-16 text-gray-300" />
+                    </div>
+                  )}
+                </div>
+              )
+            }
 
             {/* Feature badges */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -126,8 +247,9 @@ export default function Home() {
           </form>
         </div>
       </div>
+      
       {/* RECENT LINKS */}
-      <div className="w-full max-w-[1200px] mx-auto pt-[80px] pb-[120px] px-6">
+      <div className="w-full max-w-[1200px] mx-auto pt-[80px] pb-[80px] px-6">
         <div>
 
         </div>

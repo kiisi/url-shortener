@@ -41,10 +41,14 @@ export async function POST(request: Request) {
 
     const link = await createShortLink(result.data.url);
 
-    return NextResponse.json({
-        shortCode: link.shortCode,
-        originalUrl: link.originalUrl,
-        shortUrl: `${process.env.BASE_URL}/${link.shortCode}`
+    return Response.json({
+        success: true,
+        message: "Done! Your long URL just got a whole lot shorter. 🎉 ",
+        data: {
+            shortCode: link.shortCode,
+            originalUrl: link.originalUrl,
+            shortUrl: `${process.env.BASE_URL}/${link.shortCode}`
+        }
     }, {
         status: 201,
     });
