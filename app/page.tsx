@@ -257,14 +257,14 @@ export default function Home() {
                 </div>
 
                 <div className="mt-3 flex items-center gap-4">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => setShowQr((s) => !s)}
                     className="text-[14px] text-gray-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <QrCode className="w-4 h-4" /> {showQr ? "Hide" : "Show"} QR
                     code
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={() =>
