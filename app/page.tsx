@@ -4,18 +4,14 @@ import Link from "next/link";
 import { plusJakartaSans, sourGummy } from "./fonts";
 import { cn } from "../utils";
 import {
-  Link2,
-  Pencil,
   Copy,
   Check,
   QrCode,
-  RefreshCw,
   ArrowRight,
-  AlertCircle,
   Edit3,
   LinkIcon,
-  Circle,
   LoaderCircle,
+  ExternalLink,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -269,6 +265,15 @@ export default function Home() {
                     <QrCode className="w-4 h-4" /> {showQr ? "Hide" : "Show"} QR
                     code
                   </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.open(result?.data?.shortUrl, "_blank", "noopener,noreferrer")
+                    }
+                    className="text-[14px] text-gray-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                  >
+                    <ExternalLink className="w-4 h-4" /> Visit link
+                  </button>
                   {/* <button
                     type="button"
                     onClick={reset}
@@ -280,7 +285,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="group relative isolate mt-3 w-full overflow-hidden rounded-xl bg-[#3964FE] px-8 py-3.5 font-medium text-white transition-all duration-300 ease-out disabled:pointer-events-none disabled:opacity-80 cursor-pointer"
+                  className="group relative isolate mt-5 w-full overflow-hidden rounded-xl bg-[#3964FE] px-8 py-3.5 font-medium text-white transition-all duration-300 ease-out disabled:pointer-events-none disabled:opacity-80 cursor-pointer"
                 >
                   {/* Top highlight */}
                   <span

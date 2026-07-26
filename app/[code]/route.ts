@@ -58,18 +58,22 @@ export async function GET(
   const browser = ua.browser;
   const os = ua.os;
 
-  await inngest.send({
-    name: EVENTS.CLICK_TRACKED,
-    data: {
-      shortCode: link.shortCode,
-      linkId: link.id,
-      ip,
-      referer,
-      browser: browser.name,
-      os: os.name,
-      clickedAt: new Date().toISOString(),
-    },
-  });
+  try {
+    await inngest.send({
+      name: EVENTS.CLICK_TRACKED,
+      data: {
+        shortCode: link.shortCode,
+        linkId: link.id,
+        ip,
+        referer,
+        browser: browser.name,
+        os: os.name,
+        clickedAt: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error("Failed to send Inngest event:", error);
+  }
 
   return Response.redirect(link.originalUrl, 302);
 }
