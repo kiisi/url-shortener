@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 
 export const ratelimit = new Ratelimit({
   redis,
-
   limiter: Ratelimit.tokenBucket(
     20,
     "60 s",

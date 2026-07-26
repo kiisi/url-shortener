@@ -11,6 +11,7 @@ model Link {
   id          String   @id @default(cuid())
   originalUrl String
   shortCode   String   @unique
+  alias       String?  @unique
   clicks LinkClick[]
   clickCount  Int      @default(0)
 

@@ -1,4 +1,5 @@
 import { createShortLink } from "@/lib/create-short-link";
+import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { CreateLinkSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
@@ -39,7 +40,30 @@ export async function POST(request: Request) {
         );
     }
 
-    const link = await createShortLink(result.data.url);
+    // Add Alias implementation
+
+    // TODO: check if url exists to avoid creating shortcodes for the same url
+    let link = await prisma.link.findFirst({
+        where: {
+            originalUrl: result.data.url
+        },
+    });
+
+    if (link) {
+        return Response.json({
+            success: true,
+            message: "Done! Your long URL just got a whole lot shorter. 🎉 ",
+            data: {
+                shortCode: link.shortCode,
+                originalUrl: link.originalUrl,
+                shortUrl: `${process.env.BASE_URL}/${link.shortCode}`
+            }
+        }, {
+            status: 201,
+        });
+    }
+
+    link = await createShortLink(result.data.url);
 
     return Response.json({
         success: true,
