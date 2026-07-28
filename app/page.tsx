@@ -14,6 +14,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useState } from "react";
+import Navbar from "./components/layouts/Navbar";
 
 interface ShortenUrlResponse {
   success: boolean;
@@ -85,47 +86,10 @@ export default function Home() {
   return (
     <>
       {/* NAVIGATION */}
-      <nav className="w-full max-w-[1200px] mx-auto py-5 px-6 flex justify-between">
-        <figure>
-          <h1
-            className={cn(
-              "leading-[100%] font-bold text-[28px]",
-              sourGummy.className,
-            )}
-          >
-            <span className="text-[#3964fe]">Mini</span>Url
-          </h1>
-        </figure>
-        <ul className="font-medium flex items-center gap-4">
-          <li>
-            <Link
-              href="/analytics"
-              className="rounded-[4px] px-3 py-1.5 hover:bg-[#f5f5f4]"
-            >
-              Analytics
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/plans"
-              className="rounded-[4px] px-3 py-1.5 hover:bg-[#f5f5f4]"
-            >
-              Plans
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/login"
-              className="rounded-[4px] px-3 py-1.5 hover:bg-[#f5f5f4]"
-            >
-              Login
-            </Link>
-          </li>
-        </ul>
-      </nav>
+      <Navbar />
       {/* HERO */}
       <div className="w-full max-w-[1200px] mx-auto pt-[80px] pb-[120px] px-6">
-        <div className="text-center">
+        <div>
           <h1
             className={cn(
               "max-w-max text-[42px] lg:text-[48px] font-extrabold mb-6 leading-[125%] mx-auto",
@@ -155,7 +119,7 @@ export default function Home() {
           >
             {/* Long URL Field */}
             {!result?.data && (
-              <fieldset className="flex flex-col items-start">
+              <fieldset>
                 <label
                   htmlFor="longUrl"
                   className="inline-block text-sm font-medium text-slate-700 mb-1.5"
@@ -181,10 +145,10 @@ export default function Home() {
 
             {/* Alias Field (Optional) */}
             {!result?.data && (
-              <fieldset className="flex flex-col items-start">
+              <fieldset>
                 <label
                   htmlFor="alias"
-                  className="block text-sm font-medium text-slate-700 mb-1.5"
+                  className="inline-block text-sm font-medium text-slate-700 mb-1.5"
                 >
                   Alias{" "}
                   <span className="text-slate-400 font-normal">(optional)</span>
@@ -202,14 +166,14 @@ export default function Home() {
                     className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
                   />
                 </div>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <span className="text-xs text-slate-400">
+                <div className="block md:flex flex-wrap lg:items-center gap-2 mt-2">
+                  <p className="text-xs text-slate-400 leading-[150%]">
                     Your short URL will be:
-                  </span>
-                  <span className="text-xs font-mono text-primary bg-primary/5 px-2 py-0.5 rounded-md">
+                  </p>
+                  <p className="text-xs break-all line-clamp-1 font-mono text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                     shortminiurl.vercel.app/
                     {`${alias.trim() === "" ? "your-alias" : alias}`}
-                  </span>
+                  </p>
                 </div>
               </fieldset>
             )}
@@ -245,7 +209,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="shrink-0 flex justify-center items-center gap-1.5 text-xs font-medium w-[100px] px-3 py-1.5 rounded-md bg-primary text-white hover:bg-primary/90 transition cursor-pointer"
+                    className="shrink-0 hidden md:flex justify-center items-center gap-1.5 text-xs font-medium w-[90px] px-3 py-1.5 rounded-md bg-primary text-white hover:bg-primary/90 transition cursor-pointer"
                   >
                     {copied ? (
                       <Check className="w-3.5 h-3.5" />
@@ -265,6 +229,7 @@ export default function Home() {
                     <QrCode className="w-4 h-4" /> {showQr ? "Hide" : "Show"} QR
                     code
                   </button> */}
+
                   <button
                     type="button"
                     onClick={() =>
@@ -273,6 +238,18 @@ export default function Home() {
                     className="text-[14px] text-gray-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <ExternalLink className="w-4 h-4" /> Visit link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="shrink-0 flex md:hidden justify-center items-center gap-1.5 text-xs font-medium w-[90px] px-3 py-1.5 rounded-md text-gray-500 hover:text-indigo-600  transition cursor-pointer hover:bg-primary/10"
+                  >
+                    {copied ? (
+                      <Check className="w-3.5 h-3.5" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                    {copied ? "Copied" : "Copy"}
                   </button>
                   {/* <button
                     type="button"
