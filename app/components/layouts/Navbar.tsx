@@ -15,7 +15,7 @@ export default function Navbar() {
                     <span className="text-[#3964fe]">Mini</span>Url
                 </h1>
             </figure>
-            <ul className="font-medium flex items-center gap-4">
+            <ul className="font-medium flex items-center gap-1 sm:gap-4">
                 <li>
                     <Link
                         href="/analytics"
