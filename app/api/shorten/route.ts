@@ -69,9 +69,9 @@ export async function POST(request: Request) {
     //  Add Alias implementation
     if (result.data.alias) {
         link = await createShortLinkWithAlias(result.data.url, result.data.alias);
+    } else {
+        link = await createShortLink(result.data.url);
     }
-
-    link = await createShortLink(result.data.url);
 
     return Response.json({
         success: true,
