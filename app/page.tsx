@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useFormik } from "formik";
 import { plusJakartaSans, sourGummy } from "./fonts";
 import { cn } from "../utils";
 import {
@@ -15,6 +15,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Navbar from "./components/layouts/Navbar";
+import { ShortenUrlFormValues } from "@/types/link";
+import { shortenUrlSchema } from "@/validation/shortenUrlSchema";
+import ButtonRadial from "./components/ui/button-radial";
 
 interface ShortenUrlResponse {
   success: boolean;
@@ -26,48 +29,63 @@ interface ShortenUrlResponse {
   };
 }
 
+const initialValues: ShortenUrlFormValues = {
+  url: "",
+  alias: "",
+};
+
 export default function Home() {
-  const [url, setUrl] = useState("");
-  const [alias, setAlias] = useState("");
+
+  const formik = useFormik<ShortenUrlFormValues>({
+    initialValues,
+    validationSchema: shortenUrlSchema,
+    validateOnBlur: true,
+    onSubmit: async (values, helpers) => {
+
+      if (!values.url) {
+        return setResult({
+          success: false,
+          message: "Enter a valid URL",
+        });
+      }
+
+      const payload = {
+        url: values.url,
+        ...(values.alias.trim() && { alias: values.alias.trim() }),
+      };
+      console.log(payload);
+      setStatus("loading");
+
+      try {
+        const response = await fetch("/api/shorten", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+        setResult(data);
+        console.log("Data", data);
+        helpers.resetForm();
+      }
+      catch (err) {
+        setResult(err as ShortenUrlResponse);
+      }
+      finally {
+        setStatus("idle");
+        helpers.setSubmitting(false);
+      }
+    },
+  });
+
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [result, setResult] = useState<ShortenUrlResponse>(
     {} as ShortenUrlResponse,
   );
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!url) {
-      return setResult({
-        success: false,
-        message: "Enter a valid URL",
-      });
-    }
-
-    const payload = { url };
-
-    setStatus("loading");
-
-    try {
-      const response = await fetch("/api/shorten", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-      setResult(data);
-      console.log("Data", data);
-    } catch (err) {
-      setResult(err as ShortenUrlResponse);
-    } finally {
-      setStatus("idle");
-    }
-  };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(result?.data?.shortUrl ?? '');
@@ -76,8 +94,6 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    setUrl("");
-    setAlias("");
     setResult({} as ShortenUrlResponse);
     setStatus("idle");
     setShowQr(false);
@@ -114,8 +130,9 @@ export default function Home() {
           </p>
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={formik.handleSubmit}
             className="w-full max-w-[768px] mx-auto space-y-4 w-full"
+            noValidate
           >
             {/* Long URL Field */}
             {!result?.data && (
@@ -133,13 +150,18 @@ export default function Home() {
                   <input
                     id="url"
                     type="text"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
+                    value={formik.values.url}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter the URL you want to shorten"
                     className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
                   />
                 </div>
-                {/* <p className="mt-1.5 text-xs text-slate-400"></p> */}
+                {formik.touched.url && formik.errors.url && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {formik.errors.url}
+                  </p>
+                )}
               </fieldset>
             )}
 
@@ -160,19 +182,25 @@ export default function Home() {
                   <input
                     id="alias"
                     type="text"
-                    value={alias}
-                    onChange={(e) => setAlias(e.target.value)}
+                    value={formik.values.alias}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="e.g., myblog, summer-sale"
                     className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
                   />
                 </div>
+                {formik.touched.alias && formik.errors.alias && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {formik.errors.alias}
+                  </p>
+                )}
                 <div className="block md:flex flex-wrap lg:items-center gap-2 mt-2">
                   <p className="text-xs text-slate-400 leading-[150%]">
                     Your short URL will be:
                   </p>
                   <p className="text-xs break-all line-clamp-1 font-mono text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                     shortminiurl.vercel.app/
-                    {`${alias.trim() === "" ? "your-alias" : alias}`}
+                    {`${formik.values.alias.trim() === "" ? "your-alias" : formik.values.alias}`}
                   </p>
                 </div>
               </fieldset>
@@ -184,7 +212,7 @@ export default function Home() {
                 disabled={status === "loading"}
                 className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-8 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/35 text-[15px] cursor-pointer"
               >
-                {status === "loading" ? (
+                {formik.isSubmitting ? (
                   <>
                     <LoaderCircle className="w-5 h-5 animate-spin" />{" "}
                     Shortening…
@@ -251,51 +279,12 @@ export default function Home() {
                     )}
                     {copied ? "Copied" : "Copy"}
                   </button>
-                  {/* <button
-                    type="button"
-                    onClick={reset}
-                    className="text-[14px] text-gray-500 hover:text-indigo-600 cursor-pointer"
-                  >
-                    Shorten another
-                  </button> */}
                 </div>
-                <button
-                  type="button"
+                <ButtonRadial
                   onClick={handleReset}
-                  className="group relative isolate mt-5 w-full overflow-hidden rounded-xl bg-[#3964FE] px-8 py-3.5 font-medium text-white transition-all duration-300 ease-out disabled:pointer-events-none disabled:opacity-80 cursor-pointer"
                 >
-                  {/* Top highlight */}
-                  <span
-                    className="
-      pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-full
-      bg-gradient-to-b from-white/35 to-transparent
-    "
-                  />
-                  {/* Radial light */}
-                  <span
-                    className="
-      pointer-events-none absolute -top-8 left-1/2 h-24 w-24
-      -translate-x-1/2 rounded-full bg-white/20 blur-2xl
-    "
-                  />
-                  {/* Shine animation */}
-                  <span
-                    className="
-      pointer-events-none absolute -left-1/2 top-0 h-full w-1/3
-      -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent
-      transition-transform duration-700 group-hover:translate-x-[430%]
-    "
-                  />
-
-                  {/* Bottom shadow */}
-                  <span
-                    className="
-      pointer-events-none absolute inset-x-0 bottom-0 h-px bg-black/15
-    "
-                  />
-
-                  <span className="relative z-10">Shorten another link</span>
-                </button>
+                  Shorten another link
+                </ButtonRadial>
 
                 {showQr && (
                   <div className="mt-3 w-28 h-28 bg-white border border-gray-200 rounded-lg flex items-center justify-center">
