@@ -198,7 +198,7 @@ export default function Home() {
                   <p className="text-xs text-slate-400 leading-[150%]">
                     Your short URL will be:
                   </p>
-                  <p className="text-xs break-all line-clamp-1 font-mono text-primary bg-primary/5 px-2 py-0.5 rounded-md">
+                  <p className="text-xs max-w-max break-all line-clamp-1 font-mono text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                     shortminiurl.vercel.app/
                     {`${formik.values.alias.trim() === "" ? "your-alias" : formik.values.alias}`}
                   </p>
