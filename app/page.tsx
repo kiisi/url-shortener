@@ -108,7 +108,7 @@ export default function Home() {
         <div>
           <h1
             className={cn(
-              "max-w-max text-[42px] lg:text-[48px] font-extrabold mb-6 leading-[125%] mx-auto",
+              "max-w-max text-[42px] lg:text-[48px] font-extrabold mb-6 leading-[125%] mx-auto text-center",
               plusJakartaSans.className,
             )}
           >
