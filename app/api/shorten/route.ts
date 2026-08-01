@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
 
-    // const { success, limit, remaining, reset } = await checkRateLimit();
     const rateLimitData = await checkRateLimit();
 
     if (!rateLimitData.success) {
