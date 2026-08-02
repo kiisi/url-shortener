@@ -26,10 +26,10 @@ export default function Navbar() {
                 </li>
                 <li>
                     <Link
-                        href="/plans"
+                        href="/pricing"
                         className="rounded-[4px] px-3 py-1.5 hover:bg-[#f5f5f4]"
                     >
-                        Plans
+                        Pricing
                     </Link>
                 </li>
                 <li>
