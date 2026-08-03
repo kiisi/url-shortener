@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "MiniUrl - Shorten URLs in seconds. Share everywhere",
 };
 
+import QueryProvider from "./components/QueryProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,7 +22,9 @@ export default function RootLayout({
       lang="en"
       className={cn(plusJakartaSans.className, "h-full antialiased")}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
