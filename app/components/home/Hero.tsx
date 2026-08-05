@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import ButtonRadial from "../ui/button-radial";
 import { ArrowRight, Check, Copy, Edit3, ExternalLink, LinkIcon, LoaderCircle, QrCode } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface ShortenUrlResponse {
     success: boolean;
@@ -23,6 +24,8 @@ const initialValues: ShortenUrlFormValues = {
 };
 
 export default function Hero() {
+
+    const router = useRouter()
 
     const formik = useFormik<ShortenUrlFormValues>({
         initialValues,
@@ -210,30 +213,31 @@ export default function Hero() {
                     )}
 
                     {result?.data && (
-                        <div className="mt-6 rounded-xl border border-indigo-100 bg-indigo-50/50 p-4 sm:p-5 animate-[fadeIn_0.2s_ease]">
-                            <p className="text-left text-[14px] text-gray-500 mb-2">
-                                Your short link is ready
-                            </p>
-                            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3">
-                                <span className="text-sm font-mono text-indigo-700 truncate flex-1">
-                                    {result.data.shortUrl}
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={handleCopy}
-                                    className="shrink-0 hidden md:flex justify-center items-center gap-1.5 text-xs font-medium w-[90px] px-3 py-1.5 rounded-md bg-primary text-white hover:bg-primary/90 transition cursor-pointer"
-                                >
-                                    {copied ? (
-                                        <Check className="w-3.5 h-3.5" />
-                                    ) : (
-                                        <Copy className="w-3.5 h-3.5" />
-                                    )}
-                                    {copied ? "Copied" : "Copy"}
-                                </button>
-                            </div>
+                        <>
+                            <div className="mt-6 rounded-xl border border-indigo-100 bg-indigo-50/50 p-4 sm:p-5 animate-[fadeIn_0.2s_ease]">
+                                <p className="text-left text-[14px] text-gray-500 mb-2">
+                                    Your short link is ready
+                                </p>
+                                <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3">
+                                    <span className="text-sm font-mono text-indigo-700 truncate flex-1">
+                                        {result.data.shortUrl}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={handleCopy}
+                                        className="shrink-0 hidden md:flex justify-center items-center gap-1.5 text-xs font-medium w-[90px] px-3 py-1.5 rounded-md bg-primary text-white hover:bg-primary/90 transition cursor-pointer"
+                                    >
+                                        {copied ? (
+                                            <Check className="w-3.5 h-3.5" />
+                                        ) : (
+                                            <Copy className="w-3.5 h-3.5" />
+                                        )}
+                                        {copied ? "Copied" : "Copy"}
+                                    </button>
+                                </div>
 
-                            <div className="mt-3 flex items-center gap-4">
-                                {/* <button
+                                <div className="mt-3 flex items-center gap-4">
+                                    {/* <button
                     type="button"
                     onClick={() => setShowQr((s) => !s)}
                     className="text-[14px] text-gray-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
@@ -242,40 +246,94 @@ export default function Hero() {
                     code
                   </button> */}
 
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        window.open(result?.data?.shortUrl, "_blank", "noopener,noreferrer")
-                                    }
-                                    className="text-[14px] text-gray-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
-                                >
-                                    <ExternalLink className="w-4 h-4" /> Visit link
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleCopy}
-                                    className="shrink-0 flex md:hidden justify-center items-center gap-1.5 text-xs font-medium w-[90px] px-3 py-1.5 rounded-md text-gray-500 hover:text-indigo-600  transition cursor-pointer hover:bg-primary/10"
-                                >
-                                    {copied ? (
-                                        <Check className="w-3.5 h-3.5" />
-                                    ) : (
-                                        <Copy className="w-3.5 h-3.5" />
-                                    )}
-                                    {copied ? "Copied" : "Copy"}
-                                </button>
-                            </div>
-                            <ButtonRadial
-                                onClick={handleReset}
-                            >
-                                Shorten another link
-                            </ButtonRadial>
-
-                            {showQr && (
-                                <div className="mt-3 w-28 h-28 bg-white border border-gray-200 rounded-lg flex items-center justify-center">
-                                    <QrCode className="w-16 h-16 text-gray-300" />
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            window.open(result?.data?.shortUrl, "_blank", "noopener,noreferrer")
+                                        }
+                                        className="text-[14px] text-gray-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                                    >
+                                        <ExternalLink className="w-4 h-4" /> Visit link
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleCopy}
+                                        className="shrink-0 flex md:hidden justify-center items-center gap-1.5 text-xs font-medium w-[90px] px-3 py-1.5 rounded-md text-gray-500 hover:text-indigo-600  transition cursor-pointer hover:bg-primary/10"
+                                    >
+                                        {copied ? (
+                                            <Check className="w-3.5 h-3.5" />
+                                        ) : (
+                                            <Copy className="w-3.5 h-3.5" />
+                                        )}
+                                        {copied ? "Copied" : "Copy"}
+                                    </button>
                                 </div>
-                            )}
-                        </div>
+                                <ButtonRadial
+                                    onClick={handleReset}
+                                >
+                                    Shorten another link
+                                </ButtonRadial>
+
+                                {showQr && (
+                                    <div className="mt-3 w-28 h-28 bg-white border border-gray-200 rounded-lg flex items-center justify-center">
+                                        <QrCode className="w-16 h-16 text-gray-300" />
+                                    </div>
+                                )}
+                            </div>
+                            <section className="mt-6 overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-r from-[#3964FE]/5 via-white to-[#3964FE]/10 p-4 sm:p-6">
+                                <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                                    <div className=" items-start gap-3 sm:gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#3964FE] text-white">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-5 w-5"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    strokeWidth={1.8}
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <h3 className="text-md font-semibold text-gray-900">
+                                                Explore the full app
+                                            </h3>
+                                        </div>
+
+                                        <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
+                                            Sign in to access powerful features like{" "}
+                                            <span className="font-medium text-gray-900">
+                                                link analytics
+                                            </span>
+                                            ,{" "}
+                                            <span className="font-medium text-gray-900">
+                                                custom aliases
+                                            </span>
+                                            ,{" "}
+                                            <span className="font-medium text-gray-900">
+                                                QR codes
+                                            </span>
+                                            , and{" "}
+                                            <span className="font-medium text-gray-900">
+                                                link management
+                                            </span>
+                                            .
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => router.push('/login')}
+                                        className="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 whitespace-nowrap leading-[100%] cursor-pointer">
+                                        Sign In
+                                    </button>
+                                </div>
+                            </section>
+                        </>
                     )}
 
                     {/* Feature badges */}
