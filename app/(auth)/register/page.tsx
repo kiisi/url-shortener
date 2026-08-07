@@ -17,9 +17,13 @@ import {
 } from "@/app/components/auth";
 import { registerSchema, type RegisterFormData } from "@/validation/auth";
 import { cn } from "@/utils";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const {
     register,
@@ -29,7 +33,8 @@ export default function RegisterPage() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -39,11 +44,31 @@ export default function RegisterPage() {
 
   const password = watch("password");
 
-  async function onSubmit(data: RegisterFormData) {
+  async function onSubmit(payload: RegisterFormData) {
     setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      console.log("Data", data);
+      toast.success(data.message);
+      router.push("/home");
+    }
+    catch (error) {
+      console.log(error)
+    }
+    finally {
+      setIsLoading(false);
+    }
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log("Register:", data);
+    console.log("Register:", payload);
     setIsLoading(false);
   }
 
@@ -60,13 +85,23 @@ export default function RegisterPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <FormInput
-          label="Full name"
+          label="First name"
           type="text"
-          placeholder="John Doe"
+          placeholder="John"
           icon={User}
           autoComplete="name"
-          error={errors.fullName?.message}
-          {...register("fullName")}
+          error={errors.firstName?.message}
+          {...register("firstName")}
+        />
+
+        <FormInput
+          label="Last name"
+          type="text"
+          placeholder="Doe"
+          icon={User}
+          autoComplete="lastName"
+          error={errors.lastName?.message}
+          {...register("lastName")}
         />
 
         <FormInput

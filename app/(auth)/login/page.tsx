@@ -16,9 +16,13 @@ import {
   FormDivider,
 } from "@/app/components/auth";
 import { loginSchema, type LoginFormData } from "@/validation/auth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const {
     register,
@@ -32,11 +36,31 @@ export default function LoginPage() {
     },
   });
 
-  async function onSubmit(data: LoginFormData) {
+  async function onSubmit(payload: LoginFormData) {
     setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      console.log("Data", data);
+      toast.success(data.message);
+      router.push("/home");
+    }
+    catch (error) {
+      console.log(error)
+    }
+    finally {
+      setIsLoading(false);
+    }
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log("Login:", data);
+    console.log("Register:", payload);
     setIsLoading(false);
   }
 

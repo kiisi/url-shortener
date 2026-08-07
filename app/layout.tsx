@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { plusJakartaSans } from "./fonts";
 import { cn } from "../utils";
-
+import { Toaster } from 'sonner'
 
 
 export const metadata: Metadata = {
@@ -24,6 +24,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <QueryProvider>{children}</QueryProvider>
+        <Toaster
+          position="bottom-left"
+          richColors
+        />
       </body>
     </html>
   );

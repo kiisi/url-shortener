@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Link: 'Link',
-  LinkClick: 'LinkClick'
+  LinkClick: 'LinkClick',
+  User: 'User'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -78,7 +79,8 @@ export const LinkScalarFieldEnum = {
   clickCount: 'clickCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  expiresAt: 'expiresAt'
+  expiresAt: 'expiresAt',
+  userId: 'userId'
 } as const
 
 export type LinkScalarFieldEnum = (typeof LinkScalarFieldEnum)[keyof typeof LinkScalarFieldEnum]
@@ -95,6 +97,20 @@ export const LinkClickScalarFieldEnum = {
 } as const
 
 export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  emailVerified: 'emailVerified',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const SortOrder = {
