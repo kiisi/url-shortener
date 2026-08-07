@@ -18,6 +18,10 @@ model Link {
   updatedAt   DateTime @updatedAt
   expiresAt   DateTime?
 
+  userId      String?
+  user        User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+
   @@index([createdAt])
 }
 
@@ -36,4 +40,25 @@ model LinkClick {
 
   @@index([linkId])
   @@index([clickedAt])
+}
+
+model User {
+  id            String   @id @default(cuid())
+
+  // Authentication
+  email         String   @unique
+  password      String
+  emailVerified Boolean  @default(false)
+
+  // Profile
+  firstName     String?
+  lastName      String?
+  // username      String?  @unique
+  // image         String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  links         Link[]
 }

@@ -403,10 +403,6 @@ export type LinkClickUncheckedUpdateManyWithoutLinkNestedInput = {
   deleteMany?: Prisma.LinkClickScalarWhereInput | Prisma.LinkClickScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type LinkClickCreateWithoutLinkInput = {
   id?: string
   clickedAt?: Date | string

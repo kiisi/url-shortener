@@ -22,7 +22,7 @@ export function LoadingButton({
     <button
       disabled={loading || disabled}
       className={cn(
-        "relative w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200",
+        "relative w-full rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200",
         "focus:outline-none focus:ring-2 focus:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-60",
         variant === "primary" && [

@@ -27,3 +27,8 @@ export type Link = Prisma.LinkModel
  * 
  */
 export type LinkClick = Prisma.LinkClickModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel

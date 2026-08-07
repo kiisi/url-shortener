@@ -36,7 +36,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             aria-describedby={error ? `${inputId}-error` : undefined}
             className={cn(
               "w-full rounded-xl border bg-surface px-4 py-2.5 text-sm text-heading placeholder:text-paragraph/40 transition-all duration-200",
-              "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+              "focus:outline-none focus:border-primary",
               "disabled:cursor-not-allowed disabled:opacity-50",
               Icon && "pl-10",
               rightElement && "pr-10",
@@ -48,7 +48,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             {...props}
           />
           {rightElement && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 grid place-items-center w-fit h-fit">
               {rightElement}
             </div>
           )}

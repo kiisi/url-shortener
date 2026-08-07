@@ -142,10 +142,10 @@ export function AuthLayout({ children }: AuthLayoutProps) {
       <FloatingShapes />
 
       {/* Main container */}
-      <div className="relative z-10 flex w-full max-w-[1040px] items-stretch gap-0 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="relative z-10 grid lg:grid-cols-2 w-full max-w-[1040px] gap-0 px-4 py-8 sm:px-6 lg:px-8">
         {/* Form side */}
         <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-[500px]">{children}</div>
+          <div className="w-full -max-w-[500px]">{children}</div>
         </div>
 
         {/* Brand panel — desktop only */}

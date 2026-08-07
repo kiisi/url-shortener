@@ -7,6 +7,7 @@ import { cn } from "@/utils";
 import Logo from "../ui/Logo";
 import {
   LayoutDashboard,
+  Home,
   Link as LinkIcon,
   BarChart3,
   QrCode,
@@ -19,8 +20,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sourGummy } from "@/app/fonts";
 
 const navItems = [
+  { name: "Home", href: "/home", icon: Home },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Links", href: "/links", icon: LinkIcon },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
@@ -35,14 +38,25 @@ export function Sidebar() {
 
   return (
     <motion.aside
-      animate={{ width: collapsed ? 80 : 260 }}
-      className="hidden md:flex flex-col border-r border-border bg-white h-screen sticky top-0 left-0 transition-all duration-300 z-20"
+      animate={{ width: collapsed ? 76 : 260 }}
+      transition={{
+        duration: 0.25,
+        ease: [0.4, 0, 0.2, 1],
+      }}
+      className="hidden md:flex flex-col border-r border-border bg-white h-screen sticky top-0 left-0 z-20"
     >
       {/* Logo Area */}
-      <div className="h-16 flex items-center px-6 border-b border-border">
+      <div className="h-16 flex items-center px-4 overflow-x-hidden border-b border-border">
         {collapsed ? (
-          <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white">
-            <LinkIcon size={18} />
+          <div className="px-2">
+            <h1
+              className={cn(
+                "leading-[100%] font-bold text-[28px]",
+                sourGummy.className,
+              )}
+            >
+              <span className="text-[#3964fe]">M</span>
+            </h1>
           </div>
         ) : (
           <Logo />
@@ -118,7 +132,7 @@ export function Sidebar() {
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            "absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-white text-paragraph/50 hover:text-heading hover:shadow-sm transition-all z-30"
+            "absolute -right-3 top-5 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-white text-paragraph/50 hover:text-heading hover:shadow-sm transition-all z-30"
           )}
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
