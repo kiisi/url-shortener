@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/user";
 import { CreateLinkSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
 
+// POST
 export async function POST(request: Request) {
 
     const rateLimitData = await checkRateLimit();
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
     if (link) {
         return Response.json({
             success: true,
-            message: "Done! Your long URL just got a whole lot shorter. 🎉 ",
+            message: "Your link has been shortened successfully.🎉",
             data: {
                 shortCode: link.shortCode,
                 originalUrl: link.originalUrl,
@@ -100,4 +101,73 @@ export async function POST(request: Request) {
     }, {
         status: 201,
     });
+}
+
+// GET
+export async function GET() {
+
+    try {
+        const rateLimitData = await checkRateLimit();
+
+        if (!rateLimitData.success) {
+            return NextResponse.json(
+                {
+                    message: "Too many requests",
+                },
+                {
+                    status: 429,
+                    headers: {
+                        "X-RateLimit-Limit": rateLimitData.limit.toString(),
+                        "X-RateLimit-Remaining": rateLimitData.remaining.toString(),
+                        "X-RateLimit-Reset": rateLimitData.reset.toString(),
+                    },
+                }
+            );
+        }
+
+        const user = await getCurrentUser();
+
+        console.log("User", user);
+
+        if (!user) {
+            return NextResponse.json(
+                {
+                    error: "Unauthorized",
+                },
+                {
+                    status: 401,
+                }
+            );
+        }
+
+        console.log("User", user)
+
+        const links = await prisma.link.findMany({
+            where: {
+                userId: user.userId,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: "All links fetched successfully!",
+            data: links,
+        }, {
+            status: 201,
+        });
+    }
+    catch (error) {
+        console.log("Error", error);
+        return NextResponse.json(
+            {
+                error: "Something went wrong",
+            },
+            {
+                status: 500,
+            }
+        );
+    }
 }

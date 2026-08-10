@@ -21,6 +21,7 @@ interface ShortenUrlResponse {
 const initialValues: ShortenUrlFormValues = {
     url: "",
     alias: "",
+    expiresAt: "",
 };
 
 export default function Hero() {

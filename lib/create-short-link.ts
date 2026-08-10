@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { generateShortCode } from "@/lib/nanoid";
 import { Prisma } from "@/app/generated/prisma/client";
 
-export async function createShortLink(originalUrl: string, userId: string) {
+export async function createShortLink(originalUrl: string, userId?: string) {
   const MAX_RETRIES = 5;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
@@ -30,7 +30,7 @@ export async function createShortLink(originalUrl: string, userId: string) {
   throw new Error("Failed to generate a unique short code.");
 }
 
-export async function createShortLinkWithAlias(originalUrl: string, alias: string, userId: string) {
+export async function createShortLinkWithAlias(originalUrl: string, alias: string, userId?: string) {
 
   try {
     return await prisma.link.create({

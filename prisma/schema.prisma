@@ -7,12 +7,19 @@ datasource db {
   provider = "postgresql"
 }
 
+enum LinkStatus {
+  ACTIVE
+  EXPIRED
+  DISABLED
+}
+
 model Link {
   id          String   @id @default(cuid())
   originalUrl String
   shortCode   String   @unique
   clicks LinkClick[]
   clickCount  Int      @default(0)
+  status         LinkStatus @default(ACTIVE)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

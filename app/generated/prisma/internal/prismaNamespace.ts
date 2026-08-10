@@ -672,6 +672,7 @@ export const LinkScalarFieldEnum = {
   originalUrl: 'originalUrl',
   shortCode: 'shortCode',
   clickCount: 'clickCount',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   expiresAt: 'expiresAt',
@@ -763,6 +764,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LinkStatus'
+ */
+export type EnumLinkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LinkStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LinkStatus[]'
+ */
+export type ListEnumLinkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LinkStatus[]'>
     
 
 
