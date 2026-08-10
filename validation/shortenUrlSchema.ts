@@ -3,7 +3,7 @@ import * as Yup from "yup";
 export const shortenUrlSchema = Yup.object({
     url: Yup.string()
         .trim()
-        .required("URL is required")
+        .required("A URL is required")
         .url("Enter a valid URL"),
 
     alias: Yup.string()

@@ -5,9 +5,9 @@ import { cn } from "@/utils";
 import { shortenUrlSchema } from "@/validation/shortenUrlSchema";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { ArrowRight, Check, Copy, Edit3, ExternalLink, LinkIcon, LoaderCircle, QrCode } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowRight, CalendarDays, Check, Copy, Edit3, ExternalLink, LinkIcon, LoaderCircle, QrCode } from "lucide-react";
 import ButtonRadial from "@/app/components/ui/button-radial";
+import Switch from "@/app/components/ui/switch";
 
 interface ShortenUrlResponse {
     success: boolean;
@@ -26,7 +26,8 @@ const initialValues: ShortenUrlFormValues = {
 
 export default function Page() {
 
-    const router = useRouter()
+    const [isAliasChecked, setAliasChecked] = useState(false)
+    const [isExpirationChecked, setExpirationChecked] = useState(false)
 
     const formik = useFormik<ShortenUrlFormValues>({
         initialValues,
@@ -92,7 +93,8 @@ export default function Page() {
     };
 
     return (
-        <div className="w-full bg-white p-[24px] rounded-xl">
+        <div
+            className="w-full bg-white p-[24px] rounded-xl h-max">
             <div>
                 <h1 className={cn(
                     "text-[24px] font-extrabold mb-6 leading-[125%]",
@@ -106,38 +108,49 @@ export default function Page() {
                     noValidate
                 >
                     {/* Long URL Field */}
-                    {!result?.data && (
-                        <fieldset>
-                            <label
-                                htmlFor="longUrl"
-                                className="inline-block text-sm font-medium text-slate-700 mb-1.5"
-                            >
-                                Long URL <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative w-full">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <LinkIcon className="h-5 w-5 text-slate-400" />
-                                </div>
-                                <input
-                                    id="url"
-                                    type="text"
-                                    value={formik.values.url}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    placeholder="Enter the URL you want to shorten"
-                                    className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
-                                />
+                    <fieldset>
+                        <label
+                            htmlFor="longUrl"
+                            className="inline-block text-sm font-medium text-slate-700 mb-1.5"
+                        >
+                            Long URL <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative w-full">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <LinkIcon className="h-5 w-5 text-slate-400" />
                             </div>
-                            {formik.touched.url && formik.errors.url && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {formik.errors.url}
-                                </p>
-                            )}
-                        </fieldset>
-                    )}
+                            <input
+                                id="url"
+                                type="text"
+                                value={formik.values.url}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                placeholder="Enter the URL you want to shorten"
+                                className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
+                            />
+                        </div>
+                        {formik.touched.url && formik.errors.url && (
+                            <p className="mt-1 text-sm text-red-500">
+                                {formik.errors.url}
+                            </p>
+                        )}
+                    </fieldset>
+
+                    <fieldset className="flex items-center justify-between p-3 rounded-xl border border-border">
+                        <div>
+                            <p className="text-sm font-medium text-foreground">Set Alias</p>
+                            <p className="text-xs text-muted-foreground">
+                                Customize your short link
+                            </p>
+                        </div>
+                        <Switch
+                            checked={isAliasChecked}
+                            onCheckedChange={() => setAliasChecked(prev => !prev)}
+                        />
+                    </fieldset>
 
                     {/* Alias Field (Optional) */}
-                    {!result?.data && (
+                    {isAliasChecked && (
                         <fieldset>
                             <label
                                 htmlFor="alias"
@@ -177,6 +190,52 @@ export default function Page() {
                         </fieldset>
                     )}
 
+                    <fieldset className="flex items-center justify-between p-3 rounded-lg border border-border">
+                        <div>
+                            <p className="text-sm font-medium text-foreground">
+                                Set Link Expiration
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                                Set a date for your link to expire
+                            </p>
+                        </div>
+                        <Switch
+                            checked={isExpirationChecked}
+                            onCheckedChange={() => setExpirationChecked(prev => !prev)}
+                        />
+                    </fieldset>
+
+                    {
+                        isExpirationChecked && (
+                            <fieldset>
+                                <label
+                                    htmlFor="expiresAt"
+                                    className="inline-block text-sm font-medium text-slate-700 mb-1.5"
+                                >
+                                    Expiry Date
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <CalendarDays className="h-5 w-5 text-slate-400" />
+                                    </div>
+                                    <input
+                                        id="expiresAt"
+                                        type="date"
+                                        {...formik.getFieldProps("expiresAt")}
+                                        min={new Date().toISOString().split("T")[0]}
+                                        className={cn(
+                                            // formik.touched.expiresAt && formik.errors.expiresAt && "border-destructive focus-visible:ring-destructive",
+                                            "w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:border-primary transition-all text-slate-700 placeholder:text-slate-400 text-sm"
+                                        )}
+                                    />
+                                </div>
+                                {/* {formik.touched.expiresAt && formik.errors.expiresAt && (
+                            <p className="text-xs text-destructive mt-1">{String(formik.errors.expiresAt)}</p>
+                        )} */}
+                            </fieldset>
+
+                        )
+                    }
                     {!result?.data && (
                         <button
                             type="submit"
