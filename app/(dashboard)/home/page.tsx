@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ArrowRight, CalendarDays, Check, Copy, Edit3, ExternalLink, LinkIcon, LoaderCircle, QrCode } from "lucide-react";
 import ButtonRadial from "@/app/components/ui/button-radial";
 import Switch from "@/app/components/ui/switch";
+import { toast } from "sonner";
 
 interface ShortenUrlResponse {
     success: boolean;
@@ -22,6 +23,7 @@ interface ShortenUrlResponse {
 const initialValues: ShortenUrlFormValues = {
     url: "",
     alias: "",
+    expiresAt: "",
 };
 
 export default function Page() {
@@ -50,11 +52,12 @@ export default function Page() {
             setStatus("loading");
 
             try {
-                const response = await fetch("/api/shorten", {
+                const response = await fetch("/api/links", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    credentials: "include",
                     body: JSON.stringify(payload),
                 });
 
@@ -62,6 +65,7 @@ export default function Page() {
                 setResult(data);
                 console.log("Data", data);
                 helpers.resetForm();
+                toast.success(data.message)
             }
             catch (err) {
                 setResult(err as ShortenUrlResponse);
@@ -221,7 +225,9 @@ export default function Page() {
                                     <input
                                         id="expiresAt"
                                         type="date"
-                                        {...formik.getFieldProps("expiresAt")}
+                                        value={formik.values.expiresAt}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
                                         min={new Date().toISOString().split("T")[0]}
                                         className={cn(
                                             // formik.touched.expiresAt && formik.errors.expiresAt && "border-destructive focus-visible:ring-destructive",
