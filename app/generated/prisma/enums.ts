@@ -9,7 +9,10 @@
 * 🟢 You can import this file directly.
 */
 
+export const LinkStatus = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  DISABLED: 'DISABLED'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type LinkStatus = (typeof LinkStatus)[keyof typeof LinkStatus]

@@ -77,6 +77,7 @@ export const LinkScalarFieldEnum = {
   originalUrl: 'originalUrl',
   shortCode: 'shortCode',
   clickCount: 'clickCount',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   expiresAt: 'expiresAt',

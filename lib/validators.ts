@@ -12,6 +12,19 @@ export const CreateLinkSchema = z.object({
       "Alias can only contain letters, numbers, hyphens and underscores."
     )
     .optional(),
+  expirationDate: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true;
+
+        return new Date(value).getTime() > Date.now();
+      },
+      {
+        message: "Expiration date must be in the future.",
+      }
+    ),
 });
 
 export type CreateLinkInput = z.infer<typeof CreateLinkSchema>;

@@ -1,26 +1,67 @@
 "use client";
 
-import { useState } from "react";
 import { DataTable, ActionDropdown, EmptyState } from "@/app/components/dashboard";
-import { mockLinks, type Link as LinkType } from "@/lib/mockData";
 import { format } from "date-fns";
 import { Copy, QrCode, Edit, Archive, Trash2, Activity, Link2, ExternalLink } from "lucide-react";
 import { cn } from "@/utils";
+import { useQuery } from "@tanstack/react-query";
+
+
+export interface Link {
+  id: string;
+  originalUrl: string;
+  shortCode: string;
+  alias?: string | null;
+  expiresAt?: string | null;
+  clickCount: number;
+  createdAt: string;
+  updatedAt: string;
+  status: "ACTIVE" | "EXPIRED" | "DISABLED"
+}
+
+interface GetLinksResponse {
+  data: Link[];
+}
 
 export default function LinksPage() {
-  const [links, setLinks] = useState(mockLinks);
+
+  const { data: links, isLoading } = useQuery({
+    queryKey: ["links"],
+    queryFn: async () => {
+      const response = await fetch("/api/links", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include"
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+
+        throw new Error(error?.message || "Failed to fetch links");
+      }
+
+      const data: GetLinksResponse = await response.json();
+      console.log("Data", data);
+
+      return data.data;
+    },
+  });
 
   const columns = [
     {
       header: "Short Link",
-      cell: (link: LinkType) => (
+      cell: (link: Link) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-surface flex items-center justify-center text-primary shrink-0 border border-border">
             <Link2 size={14} />
           </div>
           <div>
-            <a href={`https://${link.shortLink}`} target="_blank" className="font-semibold text-heading hover:text-primary transition-colors flex items-center gap-1">
-              {link.shortLink}
+            <a
+              href={`${process.env.NEXT_PUBLIC_BASE_URL}/${link.shortCode}`}
+              target="_blank" className="font-semibold text-heading hover:text-primary transition-colors flex items-center gap-1">
+              {process.env.NEXT_PUBLIC_BASE_URL + "/" + link.shortCode}
             </a>
             <span className="text-xs text-paragraph mt-0.5 inline-block truncate max-w-[200px]">{link.originalUrl}</span>
           </div>
@@ -29,12 +70,12 @@ export default function LinksPage() {
     },
     {
       header: "Status",
-      cell: (link: LinkType) => (
+      cell: (link: Link) => (
         <span className={cn(
-          "text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide", 
-          link.status === 'active' ? 'bg-success/10 text-success' : 
-          link.status === 'expired' ? 'bg-warning/10 text-warning' : 
-          'bg-paragraph/10 text-paragraph'
+          "text-[11px] font-medium px-2.5 py-1 rounded-full uppercase tracking-wide",
+          link.status === 'ACTIVE' ? 'bg-success/10 text-success' :
+            link.status === 'EXPIRED' ? 'bg-warning/10 text-warning' :
+              'bg-paragraph/10 text-paragraph'
         )}>
           {link.status}
         </span>
@@ -42,20 +83,24 @@ export default function LinksPage() {
     },
     {
       header: "Clicks",
-      cell: (link: LinkType) => (
-        <span className="font-semibold text-heading">{link.clicks.toLocaleString()}</span>
+      cell: (link: Link) => (
+        <span className="font-semibold text-heading">
+          {link.clickCount.toLocaleString()}
+        </span>
       ),
     },
     {
       header: "Created",
-      cell: (link: LinkType) => (
-        <span className="text-sm">{format(new Date(link.createdAt), 'MMM dd, yyyy')}</span>
+      cell: (link: Link) => (
+        <span className="text-sm">
+          {format(new Date(link.createdAt), 'MMM dd, yyyy')}
+        </span>
       ),
     },
     {
       header: "",
       className: "text-right",
-      cell: (link: LinkType) => (
+      cell: (link: Link) => (
         <div className="flex justify-end items-center gap-1">
           <button className="p-2 text-paragraph hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Copy">
             <Copy size={16} />
@@ -64,10 +109,10 @@ export default function LinksPage() {
             <QrCode size={16} />
           </button>
           <ActionDropdown items={[
-            { label: "View Analytics", icon: Activity, onClick: () => {} },
-            { label: "Edit Link", icon: Edit, onClick: () => {} },
-            { label: "Archive", icon: Archive, onClick: () => {} },
-            { label: "Delete", icon: Trash2, onClick: () => {}, danger: true },
+            { label: "View Analytics", icon: Activity, onClick: () => { } },
+            { label: "Edit Link", icon: Edit, onClick: () => { } },
+            { label: "Archive", icon: Archive, onClick: () => { } },
+            { label: "Delete", icon: Trash2, onClick: () => { }, danger: true },
           ]} />
         </div>
       ),
@@ -95,17 +140,18 @@ export default function LinksPage() {
         </div>
       </div>
 
-      <DataTable 
-        data={links} 
-        columns={columns} 
-        keyExtractor={(item) => item.id} 
+      <DataTable
+        data={links as Link[]}
+        columns={columns}
+        keyExtractor={(item) => item.id}
+        isLoading={isLoading}
         emptyState={
-          <EmptyState 
-            icon={Link2} 
-            title="No links yet" 
-            description="You haven't created any short links. Create your first link to get started." 
-            actionLabel="Create Link" 
-            onAction={() => {}} 
+          <EmptyState
+            icon={Link2}
+            title="No links yet"
+            description="You haven't created any short links. Create your first link to get started."
+            actionLabel="Create Link"
+            onAction={() => { }}
           />
         }
       />
