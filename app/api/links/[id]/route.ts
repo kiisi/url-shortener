@@ -1,8 +1,16 @@
+import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getCurrentUser } from "@/lib/user";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function DELETE(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+
+    const { id } = await params;
+
+    console.log("ID", id)
 
     const rateLimitData = await checkRateLimit();
 
@@ -25,12 +33,30 @@ export async function GET() {
     try {
         const user = await getCurrentUser();
 
-        return NextResponse.json({
-            success: true,
-            message: "Success!",
-        }, {
-            status: 201,
+        const link = await prisma.link.findFirst({
+            where: {
+                id,
+                userId: user?.userId,
+            },
         });
+
+        if (!link) {
+            return NextResponse.json(
+                { message: "Link not found" },
+                { status: 404 }
+            );
+        }
+
+        await prisma.link.delete({
+            where: {
+                id: link.id,
+            },
+        });
+
+        return NextResponse.json(
+            { message: "Link deleted successfully" },
+            { status: 200 }
+        );
     }
     catch (error) {
         console.log("Error", error);

@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     if (link) {
         return Response.json({
             success: true,
-            message: "Your link has been shortened successfully.🎉",
+            message: "Link shortened successfully!🎉",
             data: {
                 shortCode: link.shortCode,
                 originalUrl: link.originalUrl,

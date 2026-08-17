@@ -16,6 +16,7 @@ interface DataTableProps<T> {
   keyExtractor: (item: T) => string;
   emptyState?: ReactNode;
   isLoading?: boolean;
+  isPending?: boolean;
 }
 
 export function DataTable<T>({
@@ -24,6 +25,7 @@ export function DataTable<T>({
   keyExtractor,
   emptyState,
   isLoading,
+  isPending,
 }: DataTableProps<T>) {
 
   if (isLoading) {
@@ -79,13 +81,13 @@ export function DataTable<T>({
     );
   }
 
-  if (data.length === 0 && emptyState) {
+  if (data?.length === 0 && emptyState) {
     return <div className="mt-6">{emptyState}</div>;
   }
 
   return (
     <div className="w-full bg-white border border-border rounded-2xl overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-surface border-b border-border">
             <tr>
@@ -127,6 +129,11 @@ export function DataTable<T>({
             ))}
           </tbody>
         </table>
+        {isPending && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-primary" />
+          </div>
+        )}
       </div>
     </div>
   );

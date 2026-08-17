@@ -9,6 +9,7 @@ import { ArrowRight, CalendarDays, Check, Copy, Edit3, ExternalLink, LinkIcon, L
 import ButtonRadial from "@/app/components/ui/button-radial";
 import Switch from "@/app/components/ui/switch";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ShortenUrlResponse {
     success: boolean;
@@ -28,8 +29,52 @@ const initialValues: ShortenUrlFormValues = {
 
 export default function Page() {
 
+    const queryClient = useQueryClient();
+
     const [isAliasChecked, setAliasChecked] = useState(false)
     const [isExpirationChecked, setExpirationChecked] = useState(false)
+
+    const shortenUrlMutation = useMutation({
+        mutationFn: async (payload: {
+            url: string;
+            alias?: string;
+        }) => {
+            const response = await fetch("/api/links", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify(payload),
+            });
+
+            const data: ShortenUrlResponse = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to shorten URL");
+            }
+
+            return data;
+        },
+
+        onSuccess: (data) => {
+            setResult(data);
+
+            toast.success(data.message);
+
+            // If your links table uses ["links"]
+            queryClient.invalidateQueries({
+                queryKey: ["links"],
+            });
+        },
+
+        onError: (error) => {
+            setResult({
+                success: false,
+                message: error.message || "Something went wrong",
+            });
+        },
+    });
 
     const formik = useFormik<ShortenUrlFormValues>({
         initialValues,
@@ -52,20 +97,7 @@ export default function Page() {
             setStatus("loading");
 
             try {
-                const response = await fetch("/api/links", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    body: JSON.stringify(payload),
-                });
-
-                const data = await response.json();
-                setResult(data);
-                console.log("Data", data);
-                helpers.resetForm();
-                toast.success(data.message)
+                await shortenUrlMutation.mutateAsync(payload);
             }
             catch (err) {
                 setResult(err as ShortenUrlResponse);

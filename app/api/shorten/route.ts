@@ -74,7 +74,7 @@ export async function POST(request: Request) {
 
     return Response.json({
         success: true,
-        message: "Done! Your long URL just got a whole lot shorter. 🎉 ",
+        message: "Link shortened successfully! 🎉",
         data: {
             shortCode: link.shortCode,
             originalUrl: link.originalUrl,

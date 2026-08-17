@@ -2,9 +2,10 @@
 
 import { DataTable, ActionDropdown, EmptyState } from "@/app/components/dashboard";
 import { format } from "date-fns";
-import { Copy, QrCode, Edit, Archive, Trash2, Activity, Link2, ExternalLink } from "lucide-react";
+import { Copy, QrCode, Edit, Archive, Trash2, Activity, Link2, ExternalLink, Link as LinkIcon } from "lucide-react";
 import { cn } from "@/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 
 export interface Link {
@@ -24,6 +25,8 @@ interface GetLinksResponse {
 }
 
 export default function LinksPage() {
+
+  const queryClient = useQueryClient();
 
   const { data: links, isLoading } = useQuery({
     queryKey: ["links"],
@@ -49,13 +52,44 @@ export default function LinksPage() {
     },
   });
 
+  const deleteLinkMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/links/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+
+        throw new Error(error?.message || "Failed to delete link");
+      }
+
+      const data: GetLinksResponse = await response.json();
+
+      toast.success(data.message)
+
+      return data.data;
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["links"],
+      });
+    },
+
+    onError: (error) => {
+      console.error("Failed to delete link:", error);
+    },
+  });
+
   const columns = [
     {
       header: "Short Link",
       cell: (link: Link) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-surface flex items-center justify-center text-primary shrink-0 border border-border">
-            <Link2 size={14} />
+            <LinkIcon size={14} />
           </div>
           <div>
             <a
@@ -72,7 +106,7 @@ export default function LinksPage() {
       header: "Status",
       cell: (link: Link) => (
         <span className={cn(
-          "text-[11px] font-medium px-2.5 py-1 rounded-full uppercase tracking-wide",
+          "text-[11px] font-medium px-2.5 py-1.5 rounded-full uppercase tracking-wide",
           link.status === 'ACTIVE' ? 'bg-success/10 text-success' :
             link.status === 'EXPIRED' ? 'bg-warning/10 text-warning' :
               'bg-paragraph/10 text-paragraph'
@@ -112,7 +146,7 @@ export default function LinksPage() {
             { label: "View Analytics", icon: Activity, onClick: () => { } },
             { label: "Edit Link", icon: Edit, onClick: () => { } },
             { label: "Archive", icon: Archive, onClick: () => { } },
-            { label: "Delete", icon: Trash2, onClick: () => { }, danger: true },
+            { label: "Delete", icon: Trash2, onClick: () => deleteLinkMutation.mutate(link.id), danger: true },
           ]} />
         </div>
       ),
@@ -145,6 +179,7 @@ export default function LinksPage() {
         columns={columns}
         keyExtractor={(item) => item.id}
         isLoading={isLoading}
+        isPending={deleteLinkMutation.isPending}
         emptyState={
           <EmptyState
             icon={Link2}
