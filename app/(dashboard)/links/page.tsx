@@ -22,6 +22,7 @@ export interface Link {
 
 interface GetLinksResponse {
   data: Link[];
+  message?: string;
 }
 
 export default function LinksPage() {

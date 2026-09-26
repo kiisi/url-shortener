@@ -35,7 +35,7 @@ export default function DashboardOverviewPage() {
     },
   });
 
-  console.log(data)
+  const dashboardOverviewData = data?.data?.overview;
 
   return (
     <>
@@ -57,31 +57,31 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4">
         <StatCard
           title="Total Links"
-          value={kpis.totalLinks.toLocaleString()}
+          value={dashboardOverviewData?.totalLinks?.toLocaleString()}
           icon={Link2}
-          trend={kpis.totalLinksGrowth}
-          trendDirection="up"
+        // trend={kpis.totalLinksGrowth}
+        // trendDirection="up"
         />
         <StatCard
           title="Total Clicks"
-          value={kpis.totalClicks.toLocaleString()}
+          value={dashboardOverviewData?.totalClicks?.toLocaleString()}
           icon={MousePointerClick}
-          trend={kpis.totalClicksGrowth}
-          trendDirection="up"
+        // trend={kpis.totalClicksGrowth}
+        // trendDirection="up"
         />
         <StatCard
           title="Active Links"
           value={kpis.activeLinks.toLocaleString()}
           icon={Activity}
-          trend={kpis.activeLinksGrowth}
+          // trend={kpis.activeLinksGrowth}
           trendDirection="up"
         />
         <StatCard
           title="Avg. Click Rate"
-          value={kpis.avgCtr}
+          value={dashboardOverviewData?.avgClicksPerActiveLink}
           icon={TrendingUp}
-          trend={kpis.avgCtrGrowth}
-          trendDirection="up"
+        // trend={kpis.avgCtrGrowth}
+        // trendDirection="up"
         />
       </div>
 
