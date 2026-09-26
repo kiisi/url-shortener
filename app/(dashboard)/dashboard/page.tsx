@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { cn } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { LinkType } from "@/types/link";
 
 export default function DashboardOverviewPage() {
   const { kpis, clickHistory } = mockDashboardData;
@@ -39,6 +40,7 @@ export default function DashboardOverviewPage() {
   const dashboardOverviewData = data?.data?.overview;
   const topPerformingLinks = data?.data?.topPerformingLinks;
   const recentActivity = data?.data?.recentActivity;
+  const clicksOverTime = data?.data?.clicksOverTime;
 
   return (
     <>
@@ -61,7 +63,7 @@ export default function DashboardOverviewPage() {
         <StatCard
           title="Total Links"
           value={dashboardOverviewData?.totalLinks?.toLocaleString()}
-          icon={Link2}
+          icon={LinkIcon}
         // trend={kpis.totalLinksGrowth}
         // trendDirection="up"
         />
@@ -88,12 +90,12 @@ export default function DashboardOverviewPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-4">
+        <div className="xl:col-span-2">
           <ChartCard title="Clicks over time" description="Total clicks across all your short links.">
             <div className="h-[300px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={clickHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <AreaChart data={clicksOverTime} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3964FE" stopOpacity={0.2} />
@@ -117,7 +119,6 @@ export default function DashboardOverviewPage() {
                     contentStyle={{
                       borderRadius: '12px',
                       border: '1px solid #E2E8F0',
-                      // boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
                     }}
                   />
                   <Area
@@ -137,7 +138,7 @@ export default function DashboardOverviewPage() {
         <div>
           <ChartCard title="Top Performing Links" className="h-full">
             <div className="flex flex-col gap-4 mt-4">
-              {topPerformingLinks && topPerformingLinks.map((link) => (
+              {topPerformingLinks && topPerformingLinks.map((link: LinkType) => (
                 <div key={link.id} className="flex items-center justify-between p-3 rounded-xl border border-border/50 bg-surface/50 hover:bg-surface transition-colors">
                   <div className="min-w-0 flex-1 mr-4">
                     <Link
@@ -161,7 +162,7 @@ export default function DashboardOverviewPage() {
       <div>
         <h2 className="text-xl font-bold text-heading mb-4 mt-2">Recent Activity</h2>
         <div className="bg-white border border-border rounded-2xl overflow-hidden">
-          {recentActivity && recentActivity.map((link, i) => (
+          {recentActivity && recentActivity.map((link: LinkType, i: number) => (
             <div key={link.id} className={cn("flex flex-col sm:flex-row sm:items-center justify-between p-5 gap-4", i !== 0 && "border-t border-border")}>
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -169,7 +170,7 @@ export default function DashboardOverviewPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <a href={`https://${link.shortLink}`} target="_blank" className="font-semibold text-heading hover:text-primary transition-colors">
+                    <a href={`${process.env.NEXT_PUBLIC_BASE_URL}/${link.shortCode}`} target="_blank" className="font-semibold text-heading hover:text-primary transition-colors">
                       {process.env.NEXT_PUBLIC_BASE_URL}/{link.shortCode}
                     </a>
                     <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full uppercase", link.status.toLowerCase() === 'active' ? 'bg-success/10 text-success' : 'bg-paragraph/10 text-paragraph')}>
@@ -189,14 +190,14 @@ export default function DashboardOverviewPage() {
                 <button className="p-2 text-paragraph hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger" title="Copy Link">
                   <Copy size={16} />
                 </button>
-                {/* <button className="p-2 text-paragraph hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger" title="QR Code">
+                <button className="p-2 text-paragraph hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger" title="QR Code">
                   <QrCode size={16} />
-                </button> */}
-                <ActionDropdown items={[
+                </button>
+                {/* <ActionDropdown items={[
                   { label: "View Analytics", icon: Activity, onClick: () => { } },
                   { label: "Edit Link", icon: Link2, onClick: () => { } },
                   { label: "Archive", icon: ExternalLink, onClick: () => { } },
-                ]} />
+                ]} /> */}
               </div>
             </div>
           ))}

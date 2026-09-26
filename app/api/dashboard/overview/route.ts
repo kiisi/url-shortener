@@ -2,8 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getCurrentUser } from "@/lib/user";
 import { NextResponse } from "next/server";
-import { success } from "zod";
-
+import { format } from "date-fns";
 
 export async function GET() {
 
@@ -128,7 +127,7 @@ export async function GET() {
                 : 0;
 
         const clicksOverTime = _clicksOverTime.map((item) => ({
-            date: item.date,
+            date: format(item.date, "MMM dd"),
             clicks: Number(item.clicks),
         }));
 
