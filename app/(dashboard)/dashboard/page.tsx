@@ -144,7 +144,7 @@ export default function DashboardOverviewPage() {
                     <Link
                       href={`${process.env.NEXT_PUBLIC_BASE_URL}/${link.shortCode}`}
                       target="_blank" className="text-sm font-semibold text-heading hover:text-primary truncate">
-                      {process.env.NEXT_PUBLIC_BASE_URL}/{link.shortCode}
+                      {String(`${process.env.NEXT_PUBLIC_BASE_URL}/${link.shortCode}`).replace(/^https?:\/\//, "")}
                     </Link>
                     <p className="text-xs text-paragraph truncate">{link.originalUrl}</p>
                   </div>
@@ -171,7 +171,7 @@ export default function DashboardOverviewPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <a href={`${process.env.NEXT_PUBLIC_BASE_URL}/${link.shortCode}`} target="_blank" className="font-semibold text-heading hover:text-primary transition-colors">
-                      {process.env.NEXT_PUBLIC_BASE_URL}/{link.shortCode}
+                      {String(`${process.env.NEXT_PUBLIC_BASE_URL}/${link.shortCode}`).replace(/^https?:\/\//, "")}
                     </a>
                     <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full uppercase", link.status.toLowerCase() === 'active' ? 'bg-success/10 text-success' : 'bg-paragraph/10 text-paragraph')}>
                       {link.status}
