@@ -6,9 +6,36 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { mockDashboardData, mockLinks } from "@/lib/mockData";
 import { format } from "date-fns";
 import { cn } from "@/utils";
+import { useQuery } from "@tanstack/react-query";
 
 export default function DashboardOverviewPage() {
   const { kpis, clickHistory } = mockDashboardData;
+
+  const { data } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: async () => {
+      const response = await fetch("/api/dashboard/overview", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include"
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+
+        throw new Error(error?.message || "Failed to fetch dashboard overview");
+      }
+      // DashboardOverviewResponse
+      const data = await response.json();
+      console.log("Data", data);
+
+      return data;
+    },
+  });
+
+  console.log(data)
 
   return (
     <>
