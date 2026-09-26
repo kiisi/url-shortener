@@ -1,12 +1,13 @@
 "use client";
 
 import { StatCard, ChartCard, ActionDropdown } from "@/app/components/dashboard";
-import { Link2, MousePointerClick, TrendingUp, Activity, ExternalLink, Copy, QrCode } from "lucide-react";
+import { Link2, MousePointerClick, TrendingUp, Activity, ExternalLink, Copy, QrCode, LinkIcon } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { mockDashboardData, mockLinks } from "@/lib/mockData";
 import { format } from "date-fns";
 import { cn } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 export default function DashboardOverviewPage() {
   const { kpis, clickHistory } = mockDashboardData;
@@ -36,6 +37,8 @@ export default function DashboardOverviewPage() {
   });
 
   const dashboardOverviewData = data?.data?.overview;
+  const topPerformingLinks = data?.data?.topPerformingLinks;
+  const recentActivity = data?.data?.recentActivity;
 
   return (
     <>
@@ -134,14 +137,18 @@ export default function DashboardOverviewPage() {
         <div>
           <ChartCard title="Top Performing Links" className="h-full">
             <div className="flex flex-col gap-4 mt-4">
-              {mockLinks.slice(0, 4).map((link) => (
+              {topPerformingLinks && topPerformingLinks.map((link) => (
                 <div key={link.id} className="flex items-center justify-between p-3 rounded-xl border border-border/50 bg-surface/50 hover:bg-surface transition-colors">
                   <div className="min-w-0 flex-1 mr-4">
-                    <p className="text-sm font-semibold text-heading truncate">{link.shortLink}</p>
+                    <Link
+                      href={`${process.env.NEXT_PUBLIC_BASE_URL}/${link.shortCode}`}
+                      target="_blank" className="text-sm font-semibold text-heading hover:text-primary truncate">
+                      {process.env.NEXT_PUBLIC_BASE_URL}/{link.shortCode}
+                    </Link>
                     <p className="text-xs text-paragraph truncate">{link.originalUrl}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-heading">{link.clicks.toLocaleString()}</p>
+                    <p className="text-sm font-bold text-heading">{link.clickCount.toLocaleString()}</p>
                     <p className="text-[10px] text-paragraph uppercase">Clicks</p>
                   </div>
                 </div>
@@ -154,18 +161,18 @@ export default function DashboardOverviewPage() {
       <div>
         <h2 className="text-xl font-bold text-heading mb-4 mt-2">Recent Activity</h2>
         <div className="bg-white border border-border rounded-2xl overflow-hidden">
-          {mockLinks.slice(0, 3).map((link, i) => (
+          {recentActivity && recentActivity.map((link, i) => (
             <div key={link.id} className={cn("flex flex-col sm:flex-row sm:items-center justify-between p-5 gap-4", i !== 0 && "border-t border-border")}>
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Link2 size={20} className="text-primary" />
+                  <LinkIcon size={20} className="text-primary" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <a href={`https://${link.shortLink}`} target="_blank" className="font-semibold text-heading hover:text-primary transition-colors">
-                      {link.shortLink}
+                      {process.env.NEXT_PUBLIC_BASE_URL}/{link.shortCode}
                     </a>
-                    <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full uppercase", link.status === 'active' ? 'bg-success/10 text-success' : 'bg-paragraph/10 text-paragraph')}>
+                    <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full uppercase", link.status.toLowerCase() === 'active' ? 'bg-success/10 text-success' : 'bg-paragraph/10 text-paragraph')}>
                       {link.status}
                     </span>
                   </div>
@@ -174,17 +181,17 @@ export default function DashboardOverviewPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 self-start sm:self-center ml-14 sm:ml-0">
+              <div className="flex items-center gap-1.5 self-start sm:self-center ml-6 sm:ml-0">
                 <div className="text-right mr-4 hidden sm:block">
-                  <p className="text-sm font-bold text-heading">{link.clicks.toLocaleString()}</p>
+                  <p className="text-sm font-bold text-heading">{link.clickCount.toLocaleString()}</p>
                   <p className="text-[10px] text-paragraph uppercase">Clicks</p>
                 </div>
                 <button className="p-2 text-paragraph hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger" title="Copy Link">
                   <Copy size={16} />
                 </button>
-                <button className="p-2 text-paragraph hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger" title="QR Code">
+                {/* <button className="p-2 text-paragraph hover:text-primary hover:bg-primary/10 rounded-lg transition-colors tooltip-trigger" title="QR Code">
                   <QrCode size={16} />
-                </button>
+                </button> */}
                 <ActionDropdown items={[
                   { label: "View Analytics", icon: Activity, onClick: () => { } },
                   { label: "Edit Link", icon: Link2, onClick: () => { } },

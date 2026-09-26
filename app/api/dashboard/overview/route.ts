@@ -41,7 +41,7 @@ export async function GET() {
             clicksResult,
             totalLinks,
             activeLinks,
-            clicksOverTime,
+            _clicksOverTime,
             topPerformingLinks,
             recentActivity
         ] = await Promise.all([
@@ -115,16 +115,22 @@ export async function GET() {
                     originalUrl: true,
                     createdAt: true,
                     status: true,
+                    clickCount: true,
                 },
             })
         ]);
 
-        const totalClicks = clicksResult._sum.clickCount ?? 0;
+        const totalClicks = Number(clicksResult._sum.clickCount ?? 0);
 
         const avgClicksPerActiveLink =
             activeLinks > 0
                 ? Number((totalClicks / activeLinks).toFixed(2))
                 : 0;
+
+        const clicksOverTime = _clicksOverTime.map((item) => ({
+            date: item.date,
+            clicks: Number(item.clicks),
+        }));
 
         return NextResponse.json(
             {
